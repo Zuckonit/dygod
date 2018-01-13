@@ -22,7 +22,7 @@ def show_movie(movies, pager=None):
 
         click.echo(name)
         for link in movie.links:
-            click.echo('\t\t%s' % link)
+            click.echo('\t%s' % link)
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
