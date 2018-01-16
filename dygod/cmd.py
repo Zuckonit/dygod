@@ -34,8 +34,8 @@ def cli(ctx, **kwargs):
 
 @cli.command()
 @click.option('-l', '--list', default=False, help='show all categories', is_flag=True, show_default=True)
-@click.option('-s', '--select', default=0, help='choose a category', type=click.INT, show_default=True)
-@click.option('-p', '--page', default=-1, type=click.IntRange(min=-1), help="which page", show_default=True)
+@click.option('-s', '--select', default=-1, help='choose a category', type=click.INT, show_default=True)
+@click.option('-p', '--page', default=0, type=click.IntRange(min=0), help="which page", show_default=True)
 @click.pass_context
 def list(ctx, **kwargs):
     host = ctx.obj.get('host', DEFAULT_HOST)
@@ -48,7 +48,8 @@ def list(ctx, **kwargs):
             click.echo('%s  %s' % (idx, name))
 
     page = kwargs.get('page')
-    if page != -1:
+    select = kwargs.get('select')
+    if select != -1:
         max_select = len(categories) - 1
         select = min(kwargs.get('select'), max_select)
         category = categories[menus[select]]
