@@ -26,6 +26,7 @@ from functools import partial
 import requests
 from fake_useragent import UserAgent
 
+__all__ = [ 'DyGod' ]
 
 REGEX_CATEGORY = re.compile(r'<a href="(/.*?)"?>(.+)?</a></li><li>')
 REGEX_SEARCH = re.compile(
