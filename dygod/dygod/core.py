@@ -24,9 +24,9 @@ else:
 from functools import partial
 
 import requests
+requests.packages.urllib3.disable_warnings()
 from fake_useragent import UserAgent
 
-__all__ = [ 'DyGod' ]
 
 REGEX_CATEGORY = re.compile(r'<a href="(/.*?)"?>(.+)?</a></li><li>')
 REGEX_SEARCH = re.compile(
@@ -37,6 +37,9 @@ REGEX_TOTAL = re.compile(r'<b>(\d+?)</b>[\s\S]*</a>')
 REGEX_LAST = re.compile(r'<a href="/e/search/result/(.+?)">尾页</a></div>')
 REGEX_DOWNLOAD_URL = re.compile(r'<a href="(ftp://.+?)">')
 UA = UserAgent().random
+
+
+__all__ = [ 'DyGod' ]
 
 
 def lazy_property(fn):
@@ -57,16 +60,19 @@ class DyMixin(object):
         super(DyMixin, self).__init__()
         self.host = host
         self.api_search_base = urljoin(self.host, '/e/search/')
+        self.__session = requests.Session()
 
     def request(self, url, method, **kwargs):
         return_object = kwargs.pop('return_object', False)
         method = method.lower()
         headers = kwargs.get('headers', {})
         headers.setdefault('user-agent', UA)
-        headers.setdefault('host', urlsplit(self.host).netloc)
+        urlpart = urlsplit(self.host)
+        headers.setdefault('host', urlpart.netloc)
         headers.setdefault('origin', self.host)
         headers.setdefault('referer', self.host)
-        request_func = getattr(requests, method)
+        urlpart.scheme == 'https' and kwargs.setdefault('verify', False)
+        request_func = getattr(self.__session, method)
         resp = request_func(url, **kwargs)
         return resp if return_object else self.gbk2utf8(resp.content)
 
