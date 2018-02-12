@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding: utf-8
+#coding: utf-8
 
 """
     dygod wrapper for fucking the ads.
@@ -11,8 +11,16 @@
 """
 
 import re
-import urllib
-from urlparse import urljoin
+import sys
+
+PY3 = sys.version > '3'
+if PY3:
+    from urllib.parse import urljoin, urlparse as urlsplit
+    from urllib.parse import urlencode
+else:
+    from urlparse import urljoin, urlsplit
+    from urllib import urlencode
+
 from functools import partial
 
 import requests
@@ -55,7 +63,7 @@ class DyMixin(object):
         method = method.lower()
         headers = kwargs.get('headers', {})
         headers.setdefault('user-agent', UA)
-        headers.setdefault('host', self.host.lstrip('https://'))
+        headers.setdefault('host', urlsplit(self.host).netloc)
         headers.setdefault('origin', self.host)
         headers.setdefault('referer', self.host)
         request_func = getattr(requests, method)
@@ -70,11 +78,17 @@ class DyMixin(object):
 
     @staticmethod
     def utf82gbk(utf8, errors='ignore'):
-        return utf8.decode('utf-8', errors).encode('gbk', errors)
+        if PY3:
+            return utf8.encode('gbk', errors)
+        else:
+            return utf8.decode('utf-8', errors).encode('gbk', errors)
 
     @staticmethod
     def gbk2utf8(gbk, errors='ignore'):
-        return gbk.decode('gbk', errors).encode('utf-8', errors)
+        if PY3:
+            return gbk.decode('utf-8', errors)
+        else:
+            return gbk.decode('gbk', errors).encode('utf-8', errors)
 
 
 class DyGod(DyMixin):
@@ -123,7 +137,7 @@ class DyGod(DyMixin):
         }
         resp = self.request_post(
             url,
-            data=urllib.urlencode(params),
+            data=urlencode(params),
             headers=headers,
             return_object=True,
             allow_redirects=False
