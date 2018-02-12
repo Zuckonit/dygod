@@ -55,7 +55,7 @@ class DyMixin(object):
         method = method.lower()
         headers = kwargs.get('headers', {})
         headers.setdefault('user-agent', UA)
-        headers.setdefault('host', self.host.lstrip('http://'))
+        headers.setdefault('host', self.host.lstrip('https://'))
         headers.setdefault('origin', self.host)
         headers.setdefault('referer', self.host)
         request_func = getattr(requests, method)
@@ -119,7 +119,7 @@ class DyGod(DyMixin):
             'upgrade-insecure-requests': '1',
             'content-type': 'application/x-www-form-urlencoded',
             'dnt': '1',
-            'cache-control': 'max-age=0'
+            'cache-control': 'max-age=0',
         }
         resp = self.request_post(
             url,
@@ -136,7 +136,6 @@ class DyGod(DyMixin):
         resp = self.__search_post(self.search_url, keyword=keyword)
         location = resp.headers.get('location')
         first_page_url = urljoin(self.api_search_base, location)
-
         resp = self.__search_post(first_page_url, keyword=keyword)
         html = self.gbk2utf8(resp.content)
         html2 = '\n'.join(html.split('&nbsp;'))
