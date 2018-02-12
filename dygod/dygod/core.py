@@ -24,6 +24,7 @@ else:
 from functools import partial
 
 import requests
+from fake_useragent import UserAgent
 
 
 REGEX_CATEGORY = re.compile(r'<a href="(/.*?)"?>(.+)?</a></li><li>')
@@ -34,9 +35,7 @@ REGEX_PAGES = re.compile(
 REGEX_TOTAL = re.compile(r'<b>(\d+?)</b>[\s\S]*</a>')
 REGEX_LAST = re.compile(r'<a href="/e/search/result/(.+?)">尾页</a></div>')
 REGEX_DOWNLOAD_URL = re.compile(r'<a href="(ftp://.+?)">')
-
-
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
+UA = UserAgent().random
 
 
 def lazy_property(fn):
@@ -191,7 +190,7 @@ class Category(DyMixin):
 
     @lazy_property
     def html(self):
-        return self.request_get(self.category_url, )
+        return self.request_get(self.category_url)
 
     def __getattr__(self, name):
         page_url_prefix = urljoin(self.category_url, 'index')
@@ -338,3 +337,8 @@ class Movie(DyMixin):
     @lazy_property
     def score(self):
         pass
+
+
+if __name__ == '__main__':
+    dg = DyGod('https://www.dygod.net')
+    print dg.categories
