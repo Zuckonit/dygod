@@ -10,7 +10,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'Click',
-        'requests'
+        'requests',
+        'fake_useragent'
     ],
     entry_points='''
         [console_scripts]
