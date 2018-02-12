@@ -12,7 +12,7 @@ CONTEXT_SETTINGS = dict(
     ignore_unknown_options=True,
 )
 
-DEFAULT_HOST = 'http://www.dygod.net'
+DEFAULT_HOST = 'https://www.dygod.net'
 
 
 def show_movie(movies, pager=None):
@@ -26,7 +26,7 @@ def show_movie(movies, pager=None):
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.option('--host', default='http://www.dygod.net', help='homepage url')
+@click.option('--host', default=DEFAULT_HOST, help='homepage url')
 @click.pass_context
 def cli(ctx, **kwargs):
     ctx.obj = kwargs
