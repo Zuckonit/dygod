@@ -348,4 +348,4 @@ class Movie(DyMixin):
 
 if __name__ == '__main__':
     dg = DyGod('https://www.dygod.net')
-    print dg.categories
+    print (dg.categories)
